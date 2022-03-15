@@ -11,9 +11,12 @@ from flask_sqlalchemy import SQLAlchemy
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
+from bluelog.settings import config
 
 app = Flask('bluelog')
-app.config.from_pyfile('settings.py')
+# 从python类中导入配置
+config_name = os.getenv('FLASK_CONFIG', 'development')
+app.config.from_object(config[config_name])
 
 bootstrap = Bootstrap4(app)
 db = SQLAlchemy(app)
