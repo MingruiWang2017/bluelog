@@ -7,7 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}{% endblock title %} - {{ admin.blog_title|default('Blog Title') }}</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfect_blue.min.css') }}" type="text/css">
+    <!--  根据用户选择切换css主题文件  -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/%s.min.css' % request.cookies.get('theme', 'perfect_blue') }}"
+          type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
     {% endblock head %}
 </head>
@@ -56,6 +59,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+{{ moment.locale(auto_detect=True) }}
 {% endblock %}
 </body>
 </html>

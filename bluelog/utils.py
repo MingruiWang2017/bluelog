@@ -1,3 +1,5 @@
+import re
+from unidecode import unidecode
 from urllib.parse import urljoin, urlparse
 from flask import request, redirect, url_for
 
@@ -17,3 +19,14 @@ def redirect_back(default='blog.index', **kwargs):
         if is_safe_url(target):
             return redirect(target)
     return redirect(url_for(default, **kwargs))
+
+
+_punct_re = re.compile(r'[\t !"#$%&\'()-/<=>?@\[\\\]^_`{|},.]+')
+
+
+def slugify(text, delim='-'):
+    """对text生成语义化的ASCII-only slug"""
+    result = []
+    for word in _punct_re.split(text.lower()):
+        result.extend(unidecode(word).lower().split())
+    return unidecode(delim.join(result))

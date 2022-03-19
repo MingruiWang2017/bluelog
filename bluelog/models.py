@@ -1,4 +1,5 @@
 from datetime import datetime
+from bluelog.utils import slugify
 
 from bluelog.extensions import db
 
@@ -32,6 +33,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(60))
     body = db.Column(db.Text)
+    slug = db.Column(db.String(512), default=slugify(title), comment="为标题生成ASCII-only slug")
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     can_comment = db.Column(db.Boolean, default=True)
 
