@@ -4,6 +4,7 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from bluelog import db
+from bluelog.utils import slugify
 from bluelog.models import Admin, Category, Post, Comment, Link
 
 fake = Faker()
@@ -17,6 +18,7 @@ def fake_admin():
         name='Jack Smith',
         ablut='Um, Jack, had a fun time as a member of CHAM... '
     )
+    admin.set_password('helloflask')
     db.session.add(admin)
     db.session.commit()
 
@@ -38,9 +40,11 @@ def fake_categories(count=10):
 
 def fake_posts(count=50):
     for i in range(count):
+        title = fake.sentence()
         post = Post(
-            title=fake.sentence(),
+            title=title,
             body=fake.text(2000),
+            slug=slugify(title),
             category=Category.query.get(random.randint(1, Category.query.count())),  # 随机获取一个分类
             timestamp=fake.date_time_this_year()
         )

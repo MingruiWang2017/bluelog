@@ -1,5 +1,6 @@
 from datetime import datetime
 from bluelog.utils import slugify
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from bluelog.extensions import db
 
@@ -13,6 +14,12 @@ class Admin(db.Model):
     name = db.Column(db.String(30), comment="用户昵称")
     about = db.Column(db.Text, comment="关于信息")
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,6 +28,7 @@ class Category(db.Model):
     posts = db.relationship('Post', back_populates='category')
 
     def delete(self):
+        """自定义的分类删除方法，当一个分类被删除时，其所有的文章有改为default分类"""
         default_category = Category.query.get(1)
         posts = self.posts[:]
         for post in posts:
