@@ -29,7 +29,7 @@ def about():
 def show_category(category_id):
     category = Category.query.get_or_404(category_id)
     page = request.args.get('page', 1, type=int)
-    per_page = current_app.config['BLUE_LOG_POST_PER_PAGE']
+    per_page = current_app.config['BLUELOG_POST_PER_PAGE']
     pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
     posts = pagination.items
     return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
@@ -52,7 +52,7 @@ def show_post(post_id):
         form.author.data = current_user.name
         form.email.dat = current_app.config['BLUELOG_ADMIN_EMAIL']
         form.site.data = url_for('blog.index')
-        form_admin = True
+        from_admin = True
         reviewed = True
     else:
         form = CommentForm()
@@ -105,7 +105,7 @@ def reply_comment(comment_id):
 
 
 @blog_bp.route('/change-theme/<theme_name>')
-def change_them(theme_name):
+def change_theme(theme_name):
     if theme_name not in current_app.config['BLUELOG_THEMES'].keys():
         abort(404)
 

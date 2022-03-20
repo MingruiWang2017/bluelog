@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from bluelog.extensions import db
 from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm
 from bluelog.models import Post, Comment, Category, Link
-from bluelog.utils import redirect_back
+from bluelog.utils import redirect_back, slugify
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -57,8 +57,9 @@ def new_post():
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
+        slug = slugify(title)
         category = Category.query.get(form.category.data)
-        post = Post(title=title, body=body, category=category)
+        post = Post(title=title, body=body, slug=slug, category=category)
         # 使用category对象建立关系和使用外键category_id建立联系相同
         # category_id = form.category.data
         # post = Post(title=title, body=body, category_id=category_id)
@@ -77,6 +78,7 @@ def edit_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.slug = slugify(form.title.data)
         post.category = Category.query.get(form.category.data)
         db.session.commit()
         flash('Post updated.', 'success')
@@ -121,7 +123,7 @@ def manage_comment():
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['BLUELOG_COMMENT_PER_PAGE']
     if filter_rule == 'unread':
-        filtered_comments = Comment.query.filter_by(reviewed=True)
+        filtered_comments = Comment.query.filter_by(reviewed=False)
     elif filter_rule == 'admin':
         filtered_comments = Comment.query.filter_by(from_admin=True)
     else:
@@ -158,7 +160,7 @@ def delete_comment(comment_id):
 @login_required
 def manage_category():
     categories = Category.query.order_by(Category.name.asc()).all()
-    return render_template('admin/manage_category.html', categories)
+    return render_template('admin/manage_category.html', categories=categories)
 
 
 @admin_bp.route('/category/new', methods=['GET', 'POST'])

@@ -16,7 +16,7 @@ def fake_admin():
         blog_title='Bluelog',
         blog_sub_title="No, I'm the real thing.",
         name='Jack Smith',
-        ablut='Um, Jack, had a fun time as a member of CHAM... '
+        about='Um, Jack, had a fun time as a member of CHAM... '
     )
     admin.set_password('helloflask')
     db.session.add(admin)
@@ -84,7 +84,7 @@ def fake_comments(count=500):
         # 管理员评论
         comment = Comment(
             author='Jack Smith',
-            emial='jack@example.com',
+            email='jack@example.com',
             site='example.com',
             body=fake.sentence(),
             timestamp=fake.date_time_this_year(),
@@ -102,7 +102,7 @@ def fake_comments(count=500):
             author=fake.name(),
             email=fake.email(),
             site=fake.url(),
-            nody=fake.sentence(),
+            body=fake.sentence(),
             timestamp=fake.date_time_this_year(),
             reviewed=True,
             replied=Comment.query.get(random.randint(1, Comment.query.count())),

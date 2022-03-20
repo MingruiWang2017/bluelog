@@ -34,7 +34,7 @@ class BaseConfig(object):
     BLUELOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
 
     # 设置Flask-Login的session过期时间为7天
-    REMEMBER_COOKIE_DURATION = timedelta(days=os.getenv('REMEMBER_COOKIE_DURATION', 7))
+    REMEMBER_COOKIE_DURATION = timedelta(days=int(os.getenv('REMEMBER_COOKIE_DURATION', 7)))
 
 
 # 各个环境中的不同配置，主要使用数据库不同

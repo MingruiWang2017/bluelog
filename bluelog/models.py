@@ -43,7 +43,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(60))
     body = db.Column(db.Text)
-    slug = db.Column(db.String(512), default=slugify(title), comment="为标题生成ASCII-only slug")
+    slug = db.Column(db.String(512), comment="为标题生成ASCII-only slug")
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     can_comment = db.Column(db.Boolean, default=True)
 
@@ -80,7 +80,7 @@ class Comment(db.Model):
     # replied_id是外键（定义在“多”一侧），则replied在“一”一侧，即remote_side远端（set remote_side on the many-to-one side）；
     # replies是集合关系属性（定义在“一”一侧）。
     # replied_id -> replied -> replies
-    replied = db.relationship('Comment', bakc_populates='replies', remote_side=[id])
+    replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
 
 
 class Link(db.Model):
