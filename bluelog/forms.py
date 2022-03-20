@@ -29,7 +29,7 @@ class PostForm(FlaskForm):
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
-        """为category下拉菜单提供查询项"""
+        """为category下拉菜单提供查询项choices"""
         super(PostForm, self).__init__(*args, **kwargs)
         self.category.choices = [(category.id, category.name)
                                  for category in Category.query.order_by(Category.name).all()]

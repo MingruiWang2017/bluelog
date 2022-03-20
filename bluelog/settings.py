@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import timedelta
 
 # 项目根目录绝对路径
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -31,6 +32,9 @@ class BaseConfig(object):
     BLUELOG_COMMENT_PER_PAGE = 15
     # 设置页面主题（切换css文件）('theme name', 'display name')
     BLUELOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
+
+    # 设置Flask-Login的session过期时间为7天
+    REMEMBER_COOKIE_DURATION = timedelta(days=os.getenv('REMEMBER_COOKIE_DURATION', 7))
 
 
 # 各个环境中的不同配置，主要使用数据库不同
