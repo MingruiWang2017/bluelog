@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app, abort, make_response
+from flask_login import current_user
 
 from bluelog.emails import send_new_comment_mail, send_new_reply_email
 from bluelog.extensions import db
@@ -7,11 +8,6 @@ from bluelog.models import Post, Category, Comment
 from bluelog.utils import redirect_back
 
 blog_bp = Blueprint('blog', __name__)
-
-
-# 引入Flask-login之前的虚拟变量
-class current_user:
-    is_authenticated = Flase
 
 
 @blog_bp.route('/')

@@ -1,11 +1,13 @@
 from datetime import datetime
+
+from flask_login import UserMixin
 from bluelog.utils import slugify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from bluelog.extensions import db
 
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20))  # 用户登录的用户名
     password_hash = db.Column(db.String(128))  # 保存密码的哈希，不保存明文
