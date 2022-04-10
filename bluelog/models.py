@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from flask_login import UserMixin
-from bluelog.utils import slugify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from bluelog.extensions import db

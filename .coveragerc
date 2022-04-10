@@ -1,0 +1,5 @@
+[run]
+source = bluelog
+branch = true
+
+# test command: coverage run -m unittest discover && coverage html

@@ -87,11 +87,11 @@ def show_post(post_id):
     return render_template('blog/post.html', post=post, pagination=pagintion, comments=comments, form=form)
 
 
-@blog_bp.route('/post/<slug>')
-def show_slug_post(slug):
-    """通过slug来查询文章"""
-    post = Post.query.filter_by(slug=slug).first_or_404()
-    return redirect(url_for('.show_post', post_id=post.id))
+# @blog_bp.route('/post/<slug>')
+# def show_slug_post(slug):
+#     """通过slug来查询文章"""
+#     post = Post.query.filter_by(slug=slug).first_or_404()
+#     return redirect(url_for('.show_post', post_id=post.id))
 
 
 @blog_bp.route('/reply/comment/<int:comment_id>')

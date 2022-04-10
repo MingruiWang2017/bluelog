@@ -23,7 +23,7 @@ def send_mail(subject, to, html):
 
 def send_new_comment_mail(post):
     """当有新评论时，给管理员发送邮件提醒"""
-    post_url = url_for('blog.show_post', post_id=post.id, _external=True) + '#comments'  # 使用片段标识符定位到页面中元素id=comments的部分
+    post_url = url_for('blog.show_post', post_id=post.id, _external=True) + '#comments'  # 使用片段标识符定位到页面中元素id=comments部分
     send_mail(subject='New comment',
               to=current_app.config['BLUELOG_ADMIN_EMAIL'],
               html="""
@@ -41,5 +41,5 @@ def send_new_reply_email(comment):
               html="""
               <p>New reply for the comment you left in post <i>%s</i>, click the link below to ckeck:</p>
               <p><a href="%s">%s</p>
-              <p><small style="color: #868e96">Do not reply this email.</small></p> 
+              <p><small style="color: #868e96">Do not reply this email.</small></p>
               """ % (comment.post.title, post_url, post_url))

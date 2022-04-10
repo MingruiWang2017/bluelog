@@ -204,6 +204,7 @@ def delete_category(category_id):
         flash('You can not delete the default category.', 'warning')
         return redirect(url_for('blog.index'))
     category.delete()  # 使用Category实现的delete方法，在删除某个分类时，将其中的文章转移到default分类下
+    flash('Category deleted.', 'success')
     return redirect(url_for('.manage_category'))
 
 
