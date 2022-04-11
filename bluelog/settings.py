@@ -16,7 +16,10 @@ else:
 class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
 
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_RECORD_QUERIES = True
 
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = os.getenv('MAIL_PORT')
@@ -32,6 +35,7 @@ class BaseConfig(object):
     BLUELOG_COMMENT_PER_PAGE = 15
     # 设置页面主题（切换css文件）('theme name', 'display name')
     BLUELOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
+    BLUELOG_SLOW_QUERY_THRESHOLD = 0.01  # 10ms
 
     # 设置Flask-Login的session过期时间为7天
     REMEMBER_COOKIE_DURATION = timedelta(days=int(os.getenv('REMEMBER_COOKIE_DURATION', 7)))

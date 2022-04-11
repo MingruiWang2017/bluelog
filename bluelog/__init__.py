@@ -3,12 +3,13 @@ import os
 import click
 from flask import Flask, render_template
 from flask_login import current_user
+from flask_sqlalchemy import get_debug_queries
 from flask_wtf.csrf import CSRFError
 
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import bootstrap, db, login_manager, ckeditor, mail, moment, csrf
+from bluelog.extensions import bootstrap, db, login_manager, ckeditor, mail, moment, csrf, toolbar
 from bluelog.models import Admin, Post, Category, Comment, Link
 from bluelog.settings import config
 
@@ -29,6 +30,7 @@ def create_app(config_name=None):
     register_errors(app)
     register_shell_context(app)
     register_template_context(app)
+    register_request_handlers(app)
     return app
 
 
@@ -45,6 +47,7 @@ def register_extensions(app):
     ckeditor.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    toolbar.init_app(app)
 
 
 def register_blueprints(app):
@@ -167,3 +170,15 @@ def register_commands(app):
         fake_links()
 
         click.echo('Done.')
+
+
+def register_request_handlers(app):
+    @app.after_request
+    def query_profile(response):
+        for q in get_debug_queries():
+            if q.duration >= app.config['BLUELOG_SLOW_QUERY_THRESHOLD']:
+                app.logger.warning(
+                    'Slow query: Duration: %fs\n Context: %s\n Query: %s\n'
+                    % (q.duration, q.context, q.statement)
+                )
+        return response
