@@ -1,17 +1,19 @@
+import logging
 import os
+from logging.handlers import RotatingFileHandler, SMTPHandler
 
 import click
-from flask import Flask, render_template
-from flask_login import current_user
-from flask_sqlalchemy import get_debug_queries
-from flask_wtf.csrf import CSRFError
-
 from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
-from bluelog.extensions import bootstrap, db, login_manager, ckeditor, mail, moment, csrf, toolbar
+from bluelog.extensions import bootstrap, db, login_manager, ckeditor, \
+    mail, moment, csrf, toolbar, migrate, sslify
 from bluelog.models import Admin, Post, Category, Comment, Link
 from bluelog.settings import config
+from flask import Flask, render_template, request
+from flask_login import current_user
+from flask_sqlalchemy import get_debug_queries
+from flask_wtf.csrf import CSRFError
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -35,7 +37,41 @@ def create_app(config_name=None):
 
 
 def register_logging(app):
-    pass
+    class RequestFormatter(logging.Formatter):
+        """用于记录ERROR及以上等级的日志的格式化器"""
+
+        def format(self, record):
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+            return super(RequestFormatter, self).format(record)
+
+    request_formatter = RequestFormatter(
+        '[%(asctime)s %(remote_addr)s requested %(url)s \n'
+        '%(levelname)s in %(module)s: %(message)s]'
+    )
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # 循环文件处理器
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bluelog.log'),
+                                       maxBytes=10 * 1024 * 1024, backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+
+    # 邮件处理器
+    mail_handler = SMTPHandler(
+        mailhost=app.config['MAIL_SERVER'],
+        fromaddr=app.config['MAIL_USERNAME'],
+        toaddrs=['ADMIN_EMAIL'],
+        subject='Bluelog Application Error',
+        credentials=(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+    )
+    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setFormatter(request_formatter)
+
+    if not app.debug:  # 调试模式不需要将日志写入文件或发邮件
+        app.logger.addHandler(mail_handler)
+        app.logger.addHandler(file_handler)
 
 
 def register_extensions(app):
@@ -48,6 +84,8 @@ def register_extensions(app):
     mail.init_app(app)
     moment.init_app(app)
     toolbar.init_app(app)
+    migrate.init_app(app, db)
+    sslify.init_app(app)
 
 
 def register_blueprints(app):
@@ -173,6 +211,8 @@ def register_commands(app):
 
 
 def register_request_handlers(app):
+    """在日志中记录SQL慢查询"""
+
     @app.after_request
     def query_profile(response):
         for q in get_debug_queries():
