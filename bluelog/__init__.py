@@ -85,7 +85,7 @@ def register_extensions(app):
     moment.init_app(app)
     toolbar.init_app(app)
     migrate.init_app(app, db)
-    sslify.init_app(app)
+    # sslify.init_app(app)
 
 
 def register_blueprints(app):
