@@ -57,6 +57,7 @@ class ProductionConfig(BaseConfig):
     if SQLALCHEMY_DATABASE_URI.startswith('mysql'):
         import pymysql
         pymysql.install_as_MySQLdb()
+    # SQLALCHEMY_POOL_RECYCLE = 280  # for PythonAnyWher
 
 
 config = {
