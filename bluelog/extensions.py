@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
-from flask_sslify import SSLify
+# from flask_sslify import SSLify
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -18,7 +18,7 @@ mail = Mail()
 moment = Moment()
 toolbar = DebugToolbarExtension()
 migrate = Migrate()
-sslify = SSLify()
+# sslify = SSLify()
 
 
 @login_manager.user_loader
