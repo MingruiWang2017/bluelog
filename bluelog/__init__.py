@@ -7,7 +7,7 @@ from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import bootstrap, db, login_manager, ckeditor, \
-    mail, moment, csrf, toolbar, migrate, sslify
+    mail, moment, csrf, toolbar, migrate
 from bluelog.models import Admin, Post, Category, Comment, Link
 from bluelog.settings import config
 from flask import Flask, render_template, request

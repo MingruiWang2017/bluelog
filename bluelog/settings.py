@@ -54,6 +54,9 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', prefix + os.path.join(basedir, 'data.db'))
+    if SQLALCHEMY_DATABASE_URI.startswith('mysql'):
+        import pymysql
+        pymysql.install_as_MySQLdb()
 
 
 config = {
